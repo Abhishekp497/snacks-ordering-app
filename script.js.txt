@@ -1,0 +1,64 @@
+let cart = [];
+let total = 0;
+
+function addToCart(name, price) {
+    cart.push({ name, price });
+    total += price;
+    displayCart();
+}
+
+function displayCart() {
+    let cartList = document.getElementById("cart");
+    cartList.innerHTML = "";
+
+    cart.forEach(item => {
+        let li = document.createElement("li");
+        li.textContent = item.name + " - ₹" + item.price;
+        cartList.appendChild(li);
+    });
+
+    document.getElementById("total").textContent = total;
+}
+
+function placeOrder() {
+
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let payment = document.querySelector('input[name="payment"]:checked');
+
+    if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+    }
+
+    if (!name || !phone) {
+        alert("Enter name and phone");
+        return;
+    }
+
+    if (!payment) {
+        alert("Select payment method");
+        return;
+    }
+
+    let order = {
+        customerName: name,
+        phone: phone,
+        items: cart,
+        total: total,
+        payment: payment.value,
+        status: "New"
+    };
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    orders.push(order);
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    alert("Order placed successfully!");
+
+    cart = [];
+    total = 0;
+    displayCart();
+}
